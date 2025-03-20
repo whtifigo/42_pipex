@@ -20,4 +20,8 @@
 # include "libft/libft.h"
 
 void	free_rest(char **rest);
+void	exit_error(char*msg, char **to_free);
+int		file_open(char *file, int inout);
+char	**get_env(char **envp);
+char	*get_path(char *cmd, char **envp);
 #endif

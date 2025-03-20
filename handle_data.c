@@ -48,7 +48,6 @@ int	file_open(char *file, int inout)
 		//exit (this exit should be properly handled on pipex.c for flexibility)
 	}
 }
-//.............
 
 char	**get_env(char **envp)
 {
@@ -78,7 +77,7 @@ char	*get_path(char *cmd, char **envp)
 		pathing = ft_strjoin(pathen[i], "/");
 		path_full = ft_strjoin(pathing, cmd);
 		free(pathing);
-		if (access(path_full, F_OK) == 0)
+		if (access(path_full, R_OK) == 0)
 			return (path_full);
 		free(path_full);
 		i++;
