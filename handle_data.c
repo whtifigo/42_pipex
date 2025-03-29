@@ -28,7 +28,11 @@ void	free_rest(char **rest)
 void	exit_error(char *msg, char **to_free)
 {
 	if (msg)
-		perror(msg);
+	{
+		ft_putstr_fd("Error:", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd("\n", 2);
+	}
 	if (to_free)
 		free_rest(to_free);
 	exit(EXIT_FAILURE);
@@ -40,13 +44,19 @@ int	file_open(char *file, int inout)
 
 	if (inout == 0)
 		fd = open(file, O_RDONLY, 0644);
-	if (inout == 1)
+	else if (inout == 1)
 		fd = open(file, O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	if (inout == -1)
+	else if (inout == -1)
 	{
-		perror("Not opening sorry");
-		//exit (this exit should be properly handled on pipex.c for flexibility)
+		perror("Error opening file");
+		return(-1);
 	}
+	else
+	{
+		perror("Can't open file / Invalid open flag");
+		return (-1);
+	}
+	return (fd);
 }
 
 char	**get_env(char **envp)
@@ -77,7 +87,7 @@ char	*get_path(char *cmd, char **envp)
 		pathing = ft_strjoin(pathen[i], "/");
 		path_full = ft_strjoin(pathing, cmd);
 		free(pathing);
-		if (access(path_full, R_OK) == 0)
+		if (access(path_full, X_OK) == 0)
 			return (path_full);
 		free(path_full);
 		i++;
