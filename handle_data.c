@@ -47,10 +47,8 @@ int	file_open(char *file, int inout)
 		fd = open(file, O_RDONLY, 0644);
 	else if (inout == 1)
 		fd = open(file, O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	else if (fd == -1)
+	if (fd == -1)
 		exit_error("Error opening file", NULL);
-	else
-		exit_error("Can't open file / Invalid open flag", NULL);
 	return (fd);
 }
 

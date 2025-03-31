@@ -18,22 +18,26 @@ void	exec(char *cmd, char **envp)
 	char	*path;
 
 	com = ft_split(cmd, ' ');
-	if (!com)
-		exit_error("split failed", NULL);
+	if (!com || !com[0])
+		exit_error("Invalid Command\n", com);
 	path = get_path(com[0], envp);
 	if (!path)
 	{
-		ft_putstr_fd("Command not found", 2);
+		exit_error("Command not found", com);
 		ft_putstr_fd(com[0], 2);
 		ft_putstr_fd("\n", 2);
 		free_rest(com);
+		free(path);
 		exit(EXIT_FAILURE);
 	}
 	if (execve(path, com, envp) == -1)
 	{
 		free(path);
-		exit_error("Failed to execute", com);
+		free_rest(com);
+		exit_error("Failed to execute", NULL);
 	}
+	free(path);
+	free_rest(com);
 }
 
 void	child_process(char **argv, int *pipe_fd, char *cmd, char **envp)
@@ -80,9 +84,12 @@ int	main(int argc, char **argv, char **envp)
 	pid = fork();
 	if (pid == -1)
 		exit_error("Fork failed", NULL);
-	if (!pid)
+	if (pid == 0)
 		child_process(argv, pipe_fd, argv[2], envp);
-	waitpid(pid, NULL, 0);
-	parent_process(argv, pipe_fd, argv[3], envp);
+	else
+	{
+		waitpid(pid, NULL, WNOHANG);
+		parent_process(argv, pipe_fd, argv[3], envp);
+	}
 	return (0);
 }
