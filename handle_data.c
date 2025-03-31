@@ -29,7 +29,7 @@ void	exit_error(char *msg, char **to_free)
 {
 	if (msg)
 	{
-		ft_putstr_fd("Error:", 2);
+		ft_putstr_fd("Error: ", 2);
 		ft_putstr_fd(msg, 2);
 		ft_putstr_fd("\n", 2);
 	}
@@ -42,20 +42,15 @@ int	file_open(char *file, int inout)
 {
 	int	fd;
 
+	fd = 0;
 	if (inout == 0)
 		fd = open(file, O_RDONLY, 0644);
 	else if (inout == 1)
 		fd = open(file, O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	else if (inout == -1)
-	{
-		perror("Error opening file");
-		return(-1);
-	}
+	else if (fd == -1)
+		exit_error("Error opening file", NULL);
 	else
-	{
-		perror("Can't open file / Invalid open flag");
-		return (-1);
-	}
+		exit_error("Can't open file / Invalid open flag", NULL);
 	return (fd);
 }
 

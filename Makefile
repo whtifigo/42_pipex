@@ -10,23 +10,34 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME =
-CC =
-CFLAGS =
-RM =
+NAME = pipex
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+RM = rm -f
 
-SRC =
+SRC = pipex.c handle_data.c
+OBJ = $(SRC:.c=.o)
+LIBFT = libft/libft.a
 
-OBJ =
+all: $(NAME)
 
-all:
+$(LIBFT):
+	make -C libft
 
-%.o: %.c
+$(NAME): $(OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+
+%.o: %.c pipex.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+	$(RM) $(OBJ)
+	make clean -C libft
 
-fclean:
+fclean: clean
+	$(RM) $(NAME)
+	make fclean -C libft
 
-re:
+re: fclean all
 
-.PHONY:
+.PHONY: all clean fclean re
