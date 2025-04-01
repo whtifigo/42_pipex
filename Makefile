@@ -40,4 +40,9 @@ fclean: clean
 
 re: fclean all
 
+#NOt allowed in evalutation
+#valgrind: all
+#	./$(NAME)
+#	valgrind --leak-check=full --trace-children=yes ./$(NAME)
+
 .PHONY: all clean fclean re
