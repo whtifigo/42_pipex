@@ -73,23 +73,26 @@ void	parent_process(char **argv, int	*pipe_fd, char *cmd, char **envp)
 int	main(int argc, char **argv, char **envp)
 {
 	int		pipe_fd[2];
-	pid_t	pid;
+	pid_t	pid1;
+	pid_t	pid2;
 
-	if (argc < 5)
-		exit_error("Too few arguments", NULL);
-	if (argc > 5)
-		exit_error("Too many arguments", NULL);
+	if (argc != 5)
+		exit_error("Invalid Arguments", NULL);
 	if (pipe(pipe_fd) == -1)
 		exit_error("Error: Pipe failed", NULL);
-	pid = fork();
-	if (pid == -1)
-		exit_error("Fork failed", NULL);
-	if (pid == 0)
+	pid1 = fork();
+	if (pid1 == -1)
+		exit_error("It's a failed fork.", NULL);
+	if (pid1 == 0)
 		child_process(argv, pipe_fd, argv[2], envp);
-	else
-	{
-		waitpid(pid, NULL, WNOHANG);
+	pid2 = fork();
+	if (pid2 == -1)
+		exit_error("It's a failed fork.", NULL);
+	if (pid2 == 0)
 		parent_process(argv, pipe_fd, argv[3], envp);
-	}
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	waitpid(pid1, NULL, 0);
+	waitpid(pid2, NULL, 0);
 	return (0);
 }
